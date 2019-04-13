@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 /**
  * Generated class for the HomePage page.
@@ -12,14 +13,27 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
+
 })
 export class HomePage {
+ userName: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private angularFireAuth: AngularFireAuth) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
+
+  ionViewDidLoad(){
+    const userState = this.angularFireAuth.authState.subscribe( user => {
+      if(user){
+        this.userName = user.displayName;
+        userState.unsubscribe();
+      }
+    })
   }
 
+  sair(){
+    this.angularFireAuth.auth.signOut();
+    this.userName='';
+  }
 }
